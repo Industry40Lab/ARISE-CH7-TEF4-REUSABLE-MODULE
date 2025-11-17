@@ -1,0 +1,23 @@
+apiVersion: 1
+
+datasources:
+  - name: timescaleDB_pcbmetada
+    type: grafana-postgresql-datasource
+    url: timescale:5432
+    user: orion
+    secureJsonData:
+      password: ''
+    jsonData:
+      database: orion
+      sslmode: 'disable'
+      
+  - name: opcua_connection
+    type: grafana-postgresql-datasource
+    url: timescale:5432
+    user: orion
+    secureJsonData:
+      password: ''
+    jsonData:
+      database: orion_opcua_ur5e
+      sslmode: 'disable'
+      timescaledb: true
