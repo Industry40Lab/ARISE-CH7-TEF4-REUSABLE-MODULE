@@ -23,11 +23,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'defective_pcb_publisher    = defective_pcb_detector.defective_pcb_publisher:main',
-            'defective_pcb_listener     = defective_pcb_detector.defective_pcb_listener:main',
-            'defective_pcb_to_server    = defective_pcb_detector.defective_pcb_to_server:main',
-            'random_pcb_publisher       = defective_pcb_detector.random_costum_publisher:main',
 
+            'defective_pcb_to_server    = defective_pcb_detector.defective_pcb_to_server:main',
             "component_selection_client = defective_pcb_detector.scripts.gui_yolo_result:main",
             "yolo_detection_server      = defective_pcb_detector.scripts.component_detection_server:main",
             "camera_publisher           = defective_pcb_detector.scripts.camera_publisher:main",
