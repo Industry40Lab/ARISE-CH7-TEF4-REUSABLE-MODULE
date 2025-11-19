@@ -21,6 +21,7 @@ Below different components have been introduced briefly:
   </p>
   <p align="center"><em> Software architecture of temporal interface</em></p>
 
+## Command lines executions
 
 ### Run containers
 1 - Build the docker compose file
@@ -32,14 +33,8 @@ sudo docker compose build
 sudo docker compose up
 ```
 #### Run ROS2 pakcages
-3 - In case you need source the workspaces
-```bash
-sudo docker exec -it pcbinfo bash
-source /opt/vulcanexus/jazzy/setup.bash
-source /control_station_ws/install/setup.bash
-```
 
-4 - In a new terminal, run the server where pcb images are uploaded
+3- First of all, in a new terminal, run the server where pcb images are uploaded
 
 ```bash
 sudo docker exec -it pcbinfo bash
@@ -47,11 +42,43 @@ python3 -m uvicorn pcb_img_server.run_server:app --host 0.0.0.0 --port 5000
 ```
 
 
-5- In a new termianl, launch the following for pcb images to get generated and sent to the server  
+4- In a new termianl, run the ROS2 server that runs the YOLO model of component detection  
 
 ```bash
 sudo docker exec -it pcbinfo bash
-ros2 launch defective_pcb_detector defective_pcb_generator.launch.py
+ros2 run defective_pcb_detector yolo_detection_server
+```
+5- In a new termianl, run the ROS2 node to establish the communiation with the camera:  
+
+```bash
+sudo docker exec -it pcbinfo bash
+ros2 run defective_pcb_detector wrist_camera_publisher
+```
+
+6- In a new termianl, run the ROS2 client node that pops up a GUI to select the component of interest:  
+
+```bash
+sudo docker exec -it pcbinfo bash
+ros2 run defective_pcb_detector component_selection_client
+```
+
+<p align="center">
+  <img src="repo_images/gui.png" width="440" width="250"/></a>
+</p>
+in this step by clicking on the component, the current frame of camera is forwarded to the YOLO model, and the result will be received. 
+
+7- In a new termianl, run the ROS2 node that uploaded the annotated image of PCB to a server and publishes the meta data of PCBs to a topic to which the Orion-LD broker is subscribed. 
+
+```bash
+sudo docker exec -it pcbinfo bash
+ros2 run defective_pcb_detector defective_pcb_to_server
+```
+
+- In case you need source the workspaces
+```bash
+sudo docker exec -it pcbinfo bash
+source /opt/vulcanexus/jazzy/setup.bash
+source /control_station_ws/install/setup.bash
 ```
 
 ##### Grafana Dashboard settings
@@ -60,6 +87,7 @@ ros2 launch defective_pcb_detector defective_pcb_generator.launch.py
 Once logged in, click on **dashboards** on the left menu and select the **pcb_metadata_readable** dashboard.
 
 In case you want to design your panel, you can finde the queries on the data sources as bellow
+
 ```bash
 SELECT
   ts AS "time",
@@ -81,9 +109,9 @@ WHERE
 ORDER BY
   ts DESC
 LIMIT 1;
-
 ```
 In our case, Business Text plugin has been chosen as our visualization plugin, and the html code for rendering of json info is:
+
 ```bash
       <h2>Defective PCB Info</h2>
       <p><strong>ID:</strong> {{@root.pcb_id}}</p>
@@ -101,5 +129,5 @@ In our case, Business Text plugin has been chosen as our visualization plugin, a
 ```
 
 <p align="center">
-  <img src="repo_images/grafana.png" width="440" width="250"/></a>
+  <img src="repo_images/grafanalive.png" width="440" width="250"/></a>
 </p>
