@@ -2,33 +2,26 @@
 
 This branch shows the second year development of challenge 7th of the  <a href="https://arise-middleware.eu/">ARISE</a>, co-funded by European Union, at the <a href="https://www.industry40lab.org/">INDUSTRY4.0</a> laboratory affiliated with Politecnico di Milano.
 
-In a nutshell, it is demonstrated that messages in  the DDS format are translated into the NGSI-LD format and can be displayed on the dashboard,i.e., the interoperability between NGSI-LD and DDS protocols. 
+The challange addresses the deployment of HRI to improve the efficiency of worker in high precision and flexible tasks. In the use case, utlizing the Arise tools, it is aimed to decrease the setup of desoldering tasks by displaying unified infromation from different stations. In more details, the unified dispaly of data on a dashboard is achieved relying on the interoperability among different protocols from different data resouces (devices). The messages in the DDS format (comming from Vulcanexus) and OPC-UA (robot) are translated into the NGSI-LD format and are forwarded to FIWARE Orion-LD broker for the handling and storing of data in time series. 
 
-### Eprosima FastDDS
-Eprosima FastDDS is the implementation of DDS (Data Distribution Service) standard. FastDDS is the default middleware of ROS2 framework for data communication. As part of ARISE-all-in-one-middleware toolset, Eprosima developed the [DDS Enabler](https://github.com/eProsima/DDS-Enabler) which maps DDS messages into the NGSI-LD format.  
-### FIWARE stack 
+Below different components have been introduced briefly:
 
-In context-driven systems, it is important to track how data changes over time. Withing the FIWARE stack, there are two approaches to track data:
+ - On the Vulcanexus side, A YOLO model has been trained to detect electronic components particularly, Integrated Circuits(ICs) on the PCBs. On ROS2 server the YOLO model is being runned to accept the request of component detection and it returns the extracted infos. Since the broker does not handl messages with heavy payloads(like images), the annotated image of the pcb is uploaded to a server; the corresponding 'url' and its extraced info are forwarded to the broker as 'pcb meta data' which will be displayed later on a dashboard at the reworking station.  The messages of DDS format are translated to NGSI-LD format using [DDS Enabler](https://github.com/eProsima/DDS-Enabler) developed by Eprosima. 
 
-i) Activating temporal interface, which lets you automatically store and query historical data. (using components such as FIWARE Mintaka and Timeseries-DB). The advantage of the temporal interface is that it is provided by the context broker directly - no subscriptions are needed and HTTP traffic is reduced. Furthermore, the temporal interface can be queried across all context entities, not merely those which satisfy a subscription.
+ - The OPC-UA server of robot (UR5e), is developed based on Open62541 library in POLIMI see this [repo](https://github.com/mosmz95/opcua_rtde.git). The server gets data from RTDE library of UR5e. The serever get angular postion and velocity, temperature and current of each joints and TCP's (tool centring point) position, speed, and force. Then there's an IoT agent that translates that OPC UA data into the NGSI-LD format so that it can be fed into the FIWARE Orion-LD context broker.
 
-ii) Subscribing to individual context entities and persisting them into a time-series database (using components such as FIWARE QuantumLeap, CrateDB); The advantage of using a subscription mechanism is that only the subscribed entities are persisted, saving disk space. 
 
-For a more comprehensive understanding, check these two links: 
+ - FIWARE stack:
+    In context-driven systems, it is important to track how data changes over time. Within the FIWARE stack, activating temporal interface, using components such as FIWARE Mintaka and Timeseries-DB , lets you automatically store and query historical data. The advantage of the temporal interface is that it is provided by the context broker directly - no subscriptions are needed and HTTP traffic is reduced. Furthermore, the temporal interface can be queried across all context entities, not merely those which satisfy a subscription.
 
-1 - [Turorial on temporal operation from FIWARE](https://ngsi-ld-tutorials.readthedocs.io/en/latest/short-term-history.html)
+  In simple words, the FIWARE ecosystem is used to unify all these different protocols and make sure that all the robot data, whether it comes from ROS2 or from the OPC UA server, ends up in one place and is easy to visualize.
 
-2 - [Orion-ld Temporal Representation of Entities (TRoE),](https://github.com/FIWARE/context.Orion-LD/blob/develop/doc/manuals-ld/troe.md)
+  <p align="center">
+    <img src="repo_images/mintaka.png" width="440" width="250"/></a>
+  </p>
+  <p align="center"><em> Software architecture of temporal interface</em></p>
 
-<p align="center">
-  <img src="repo_images/mintaka.png" width="440" width="250"/></a>
-</p>
-<p align="center"><em> Software architecture of temporal interface</em></p>
 
-## Showcases
-i) For the subscription check the branch [develop_branch_v1](https://github.com/mosmz95/ariseproject/tree/develop_branch_v1)
-
-ii) For the termporal interface check the branch [develop_branch_v2](https://github.com/mosmz95/ariseproject/tree/develop_branch_v2)
 ### Run containers
 1 - Build the docker compose file
  ```bash
