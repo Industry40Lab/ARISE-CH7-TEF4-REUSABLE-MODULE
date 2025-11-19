@@ -131,3 +131,18 @@ In our case, Business Text plugin has been chosen as our visualization plugin, a
 <p align="center">
   <img src="repo_images/grafanalive.png" width="440" width="250"/></a>
 </p>
+
+#### OPC-UA interoprability
+
+Before running the docker compose up, make sure that the OPC-UA server is up. In this [config file](configs/iotagent-opcua/config-ld-ur5e.js), you need to configure variables for the connection to the server endpoints, authentications, etc. In addition, it is required to set the mapping tool between OPC-UA variables and NGSI-LD entities. For more detail see [arise poc](https://github.com/Engineering-Research-and-Development/arise-poc/blob/main/docs/ARISE_PoC_Tutorial_Extended.md)
+
+1- The server is run: 
+  (screenshot here of server terminal here)
+  and the OPC-UA data model of robot is: 
+
+<p align="center">
+  <img src="repo_images/opcua_datamodel.png" width="440" width="200"/></a>
+</p>
+
+2- If the mapping is configured correctly the OPC-UA iot agent convert data to NGSI-LD entities which can be dispaly in the dashboard.
+    (screenshot here of opc ua server here)
