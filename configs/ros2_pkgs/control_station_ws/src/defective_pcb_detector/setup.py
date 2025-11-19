@@ -27,7 +27,6 @@ setup(
             'defective_pcb_to_server    = defective_pcb_detector.defective_pcb_to_server:main',
             "component_selection_client = defective_pcb_detector.scripts.gui_yolo_result:main",
             "yolo_detection_server      = defective_pcb_detector.scripts.component_detection_server:main",
-            "camera_publisher           = defective_pcb_detector.scripts.camera_publisher:main",
             "wrist_camera_publisher     = defective_pcb_detector.scripts.wristcamera_publisher:main"
         ],
     },
